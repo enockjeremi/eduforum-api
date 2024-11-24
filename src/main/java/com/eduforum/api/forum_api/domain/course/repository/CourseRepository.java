@@ -1,4 +1,7 @@
 package com.eduforum.api.forum_api.domain.course.repository;
 
-public interface CourseRepository {
+import com.eduforum.api.forum_api.domain.course.model.Course;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface CourseRepository extends JpaRepository<Course, Long> {
 }

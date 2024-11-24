@@ -1,5 +1,6 @@
 package com.eduforum.api.forum_api.domain.course.model;
 
+import com.eduforum.api.forum_api.domain.course.dtos.CreateCourseDTO;
 import com.eduforum.api.forum_api.domain.topic.model.Topic;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -25,4 +26,10 @@ public class Course {
 
   @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private List<Topic> topic;
+
+  public Course(CreateCourseDTO courseDTO){
+    this.name = courseDTO.name();
+    this.category = courseDTO.category();
+  }
+
 }
