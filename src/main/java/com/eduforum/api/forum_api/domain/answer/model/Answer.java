@@ -12,7 +12,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.Instant;
 
 @Entity
-@Table(name = "topics")
+@Table(name = "answers")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -25,7 +25,8 @@ public class Answer {
   String message;
   private Boolean solution;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "topic_id", nullable = false)
   private Topic topic;
 
   @CreationTimestamp

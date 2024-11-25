@@ -1,12 +1,14 @@
 package com.eduforum.api.forum_api.domain.course.service;
 
-import com.eduforum.api.forum_api.infra.errors.ValidateException;
 import com.eduforum.api.forum_api.domain.course.dtos.CreateCourseDTO;
 import com.eduforum.api.forum_api.domain.course.dtos.GetCourse;
 import com.eduforum.api.forum_api.domain.course.dtos.UpdateCourseDTO;
 import com.eduforum.api.forum_api.domain.course.model.Course;
 import com.eduforum.api.forum_api.domain.course.repository.CourseRepository;
+import com.eduforum.api.forum_api.infra.errors.ValidateException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,13 +28,13 @@ public class CourseService {
     return new GetCourse(course);
   }
 
-  public List<GetCourse> getAllCourse() {
-    return this.courseRepository.findAll().stream().<GetCourse>map(GetCourse::new).toList();
+  public Page<GetCourse> getAllCourses(Pageable pageable) {
+    return this.courseRepository.findAll(pageable).map(GetCourse::new);
   }
 
-  private Course findCourse(Long id) {
+  public Course findCourse(Long id) {
     return this.courseRepository.findById(id).orElseThrow(() ->
-        new ValidateException("resource with id (" + id + ") not found")
+        new ValidateException("course with id (" + id + ") not found")
     );
   }
 

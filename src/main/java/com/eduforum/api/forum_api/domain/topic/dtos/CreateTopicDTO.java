@@ -1,4 +1,13 @@
-package com.eduforum.api.forum_api.domain.course.dtos;
+package com.eduforum.api.forum_api.domain.topic.dtos;
 
-public record CreateTopicDTO() {
+import jakarta.validation.constraints.NotNull;
+
+public record CreateTopicDTO(
+    @NotNull
+    String title,
+    @NotNull
+    String content,
+    @NotNull
+    Long idCourse
+) {
 }

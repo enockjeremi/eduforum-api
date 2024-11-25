@@ -2,6 +2,7 @@ package com.eduforum.api.forum_api.domain.topic.model;
 
 import com.eduforum.api.forum_api.domain.answer.model.Answer;
 import com.eduforum.api.forum_api.domain.course.model.Course;
+import com.eduforum.api.forum_api.domain.topic.dtos.UpdateTopicDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -28,14 +29,34 @@ public class Topic {
   private String content;
   private Boolean status;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "course_id", nullable = false)
   private Course course;
 
-  @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @OneToMany(mappedBy = "topic", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
   private List<Answer> answers;
 
   @CreationTimestamp
   private Instant createdOn;
   @UpdateTimestamp
   private Instant lastUpdatedOn;
+
+  public Topic(Course course, String content, String title) {
+    this.status = true;
+    this.course = course;
+    this.content = content;
+    this.title = title;
+  }
+
+  public void updateTopic(UpdateTopicDTO payload) {
+    if (payload.title() != null) {
+      this.title = payload.title();
+    } else if (payload.content() != null) {
+      this.content = payload.content();
+    }
+  }
+
+  public void changeStatus() {
+    this.status = !this.status;
+  }
 }
