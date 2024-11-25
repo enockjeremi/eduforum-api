@@ -1,6 +1,7 @@
 package com.eduforum.api.forum_api.domain.course.model;
 
 import com.eduforum.api.forum_api.domain.course.dtos.CreateCourseDTO;
+import com.eduforum.api.forum_api.domain.course.dtos.UpdateCourseDTO;
 import com.eduforum.api.forum_api.domain.topic.model.Topic;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -32,4 +33,11 @@ public class Course {
     this.category = courseDTO.category();
   }
 
+  public void updateCourse(UpdateCourseDTO payload) {
+    if (payload.name() != null){
+      this.name = payload.name();
+    } else if(payload.category() != null){
+      this.category = payload.category();
+    }
+  }
 }

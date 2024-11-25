@@ -2,7 +2,9 @@ package com.eduforum.api.forum_api.controllers;
 
 import com.eduforum.api.forum_api.domain.course.dtos.CreateCourseDTO;
 import com.eduforum.api.forum_api.domain.course.dtos.GetCourse;
+import com.eduforum.api.forum_api.domain.course.dtos.UpdateCourseDTO;
 import com.eduforum.api.forum_api.domain.course.service.CourseService;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +30,17 @@ public class CourseController {
   @GetMapping
   public List<GetCourse> getAllCourse(){
     return this.courseService.getAllCourse();
+  }
+
+  @GetMapping("/{id}")
+  public GetCourse getCourse(@PathVariable Long id) {
+    return this.courseService.getCourse(id);
+  }
+
+  @PutMapping("/{id}")
+  @Transactional
+  public GetCourse updateCourse(@PathVariable Long id, @RequestBody UpdateCourseDTO payload) {
+    return this.courseService.updateCourse(id, payload);
   }
 
 }
