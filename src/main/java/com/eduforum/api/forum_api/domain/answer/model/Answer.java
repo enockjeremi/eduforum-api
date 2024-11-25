@@ -1,5 +1,7 @@
 package com.eduforum.api.forum_api.domain.answer.model;
 
+import com.eduforum.api.forum_api.domain.answer.dtos.UpdateAnswerDTO;
+import com.eduforum.api.forum_api.domain.topic.dtos.UpdateTopicDTO;
 import com.eduforum.api.forum_api.domain.topic.model.Topic;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -22,7 +24,7 @@ public class Answer {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long Id;
 
-  String message;
+  private String message;
   private Boolean solution;
 
   @ManyToOne(fetch = FetchType.LAZY)
@@ -33,5 +35,17 @@ public class Answer {
   private Instant createdOn;
   @UpdateTimestamp
   private Instant lastUpdatedOn;
+
+  public Answer(String message, Topic topic) {
+    this.solution = false;
+    this.message = message;
+    this.topic = topic;
+  }
+
+  public void updateAnswer(UpdateAnswerDTO payload) {
+    if (payload.message() != null) {
+      this.message = payload.message();
+    }
+  }
 
 }
