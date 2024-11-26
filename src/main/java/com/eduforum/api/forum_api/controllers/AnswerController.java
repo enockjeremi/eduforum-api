@@ -10,8 +10,6 @@ import com.eduforum.api.forum_api.domain.serializer.PageDTO;
 import com.eduforum.api.forum_api.domain.serializer.PageMetadata;
 import com.eduforum.api.forum_api.domain.serializer.Response;
 import com.eduforum.api.forum_api.domain.serializer.Success;
-import com.eduforum.api.forum_api.domain.topic.dtos.GetTopic;
-import com.eduforum.api.forum_api.domain.topic.dtos.UpdateTopicDTO;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

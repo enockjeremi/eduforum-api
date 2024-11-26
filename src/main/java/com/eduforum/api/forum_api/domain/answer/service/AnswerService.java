@@ -7,9 +7,6 @@ import com.eduforum.api.forum_api.domain.answer.dtos.UpdateAnswerDTO;
 import com.eduforum.api.forum_api.domain.answer.model.Answer;
 import com.eduforum.api.forum_api.domain.answer.repository.AnswerRepository;
 import com.eduforum.api.forum_api.domain.serializer.Success;
-import com.eduforum.api.forum_api.domain.topic.dtos.GetTopic;
-import com.eduforum.api.forum_api.domain.topic.dtos.UpdateTopicDTO;
-import com.eduforum.api.forum_api.domain.topic.model.Topic;
 import com.eduforum.api.forum_api.domain.topic.service.TopicService;
 import com.eduforum.api.forum_api.infra.errors.ValidateException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +17,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class AnswerService {
 
-  private AnswerRepository answerRepository;
-  private TopicService topicService;
+  private final AnswerRepository answerRepository;
+  private final TopicService topicService;
 
   @Autowired
   public AnswerService(AnswerRepository answerRepository, TopicService topicService) {
@@ -45,7 +42,6 @@ public class AnswerService {
         new ValidateException("answer with id (" + id + ") not found")
     );
   }
-
 
   public GetAnswer updateAnswer(Long id, UpdateAnswerDTO payload) {
     Answer answer = this.findAnswer(id);

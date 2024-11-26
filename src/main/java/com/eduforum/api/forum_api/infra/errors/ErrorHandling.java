@@ -2,10 +2,13 @@ package com.eduforum.api.forum_api.infra.errors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 
 @RestControllerAdvice
 public class ErrorHandling {
@@ -16,6 +19,35 @@ public class ErrorHandling {
     now = OffsetDateTime.now();
     return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
         new ResponseException(now, false, HttpStatus.NOT_FOUND.value(), "Not Found", e.getMessage()));
+  }
+
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  public ResponseEntity<ResponseBadRequestException> errorBadRequest(MethodArgumentNotValidException e) {
+    now = OffsetDateTime.now();
+    var error = e.getFieldErrors().stream().map(ConvertFieldsBadRequest::new).toList();
+    return ResponseEntity.badRequest().body(
+        new ResponseBadRequestException(
+            now,
+            false,
+            HttpStatus.BAD_REQUEST.value(),
+            "Bad Request",
+            error
+        ));
+  }
+
+  public record ResponseBadRequestException(
+      OffsetDateTime timestamp,
+      Boolean success,
+      Integer status,
+      String error,
+      List<ConvertFieldsBadRequest> messages
+  ) {
+  }
+
+  private record ConvertFieldsBadRequest(String field, String error) {
+    public ConvertFieldsBadRequest(FieldError error) {
+      this(error.getField(), error.getDefaultMessage());
+    }
   }
 
   public record ResponseException(
