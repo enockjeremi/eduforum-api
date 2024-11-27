@@ -1,12 +1,10 @@
 package com.eduforum.api.forum_api.domain.topic.dtos;
 
-import com.eduforum.api.forum_api.domain.answer.model.Answer;
 import com.eduforum.api.forum_api.domain.course.dtos.GetCourse;
 import com.eduforum.api.forum_api.domain.topic.model.Topic;
-import com.eduforum.api.forum_api.domain.user.dtos.GetUser;
+import com.eduforum.api.forum_api.domain.user.dtos.GetUserWithProfile;
 
 import java.time.Instant;
-import java.util.List;
 
 public record GetTopic(
     Long id,
@@ -14,7 +12,7 @@ public record GetTopic(
     String content,
     Boolean status,
     GetCourse course,
-    GetUser author,
+    GetUserWithProfile author,
     Instant createdOn
 ) {
   public GetTopic(Topic topic) {
@@ -23,7 +21,7 @@ public record GetTopic(
         topic.getContent(),
         topic.getStatus(),
         new GetCourse(topic.getCourse()),
-        new GetUser(topic.getUser()),
+        new GetUserWithProfile(topic.getUser()),
         topic.getCreatedOn());
   }
 }

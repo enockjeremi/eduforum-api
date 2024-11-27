@@ -3,7 +3,7 @@ package com.eduforum.api.forum_api.domain.user.service;
 import com.eduforum.api.forum_api.domain.user.dtos.AuthenticateUserDTO;
 import com.eduforum.api.forum_api.domain.user.dtos.CreateUserDTO;
 import com.eduforum.api.forum_api.domain.user.dtos.GetProfile;
-import com.eduforum.api.forum_api.domain.user.dtos.GetUser;
+import com.eduforum.api.forum_api.domain.user.dtos.GetUserWithProfile;
 import com.eduforum.api.forum_api.domain.user.model.Profile;
 import com.eduforum.api.forum_api.domain.user.model.User;
 import com.eduforum.api.forum_api.domain.user.repository.ProfileRepository;
@@ -39,7 +39,7 @@ public class UserService {
 
   }
 
-  public GetUser signUpUser(CreateUserDTO payload) {
+  public GetUserWithProfile signUpUser(CreateUserDTO payload) {
     var exitsEmail = this.userRepository.existsByEmail(payload.email());
     if (exitsEmail) {
       throw new BadRequestException("email (" + payload.email() + ") already exists");
@@ -47,7 +47,7 @@ public class UserService {
     var passwordEncode = bCryptPasswordEncoder.encode(payload.password());
     User user = this.userRepository.save(new User(payload.email(), passwordEncode));
     Profile profile = this.profileRepository.save(new Profile(payload.profile(), user));
-    return new GetUser(user.getId(), user.getEmail(), new GetProfile(profile));
+    return new GetUserWithProfile(user.getId(), user.getEmail(), new GetProfile(profile));
   }
 
   public User findUserByEmail(String email) {

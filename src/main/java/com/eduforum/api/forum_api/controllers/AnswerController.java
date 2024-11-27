@@ -17,6 +17,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -35,22 +37,25 @@ public class AnswerController {
 
   @PostMapping
   public ResponseEntity<Response> createAnswer(@RequestBody @Valid CreateAnswerDTO payload,
-                                               UriComponentsBuilder uriComponentsBuilder) {
-    GetAnswer answer = this.answerService.createAnswer(payload);
-    URI uri = uriComponentsBuilder.path("/answers/{id}").buildAndExpand(answer.id()).toUri();
+                                               UriComponentsBuilder uriComponentsBuilder,
+                                               Authentication authentication) {
+    UserDetails user = (UserDetails) authentication.getPrincipal();
+
+    GetAnswer answer = this.answerService.createAnswer(payload, user.getUsername());
+    URI uri = uriComponentsBuilder.path("/answers/t/{id}").buildAndExpand(payload.idTopic()).toUri();
     return ResponseEntity.created(uri).body(
         new Response(true, answer)
     );
   }
 
   @GetMapping("/t/{idTopic}")
-  ResponseEntity<PageDTO<GetAllAnswerByTopic>> getAllAnswerByTopic(@PageableDefault(
+  ResponseEntity<PageDTO<GetAnswer>> getAllAnswerByTopic(@PageableDefault(
       size = 5
   ) Pageable pageable, @PathVariable Long idTopic) {
-    Page<GetAllAnswerByTopic> page = this.answerService.getAllAnswerByTopic(pageable, idTopic);
-    PageMetadata<GetAllAnswerByTopic> pagination = new PageMetadata<GetAllAnswerByTopic>(page);
+    Page<GetAnswer> page = this.answerService.getAllAnswerByTopic(pageable, idTopic);
+    PageMetadata<GetAnswer> pagination = new PageMetadata<GetAnswer>(page);
     return ResponseEntity.ok(
-        new PageDTO<GetAllAnswerByTopic>(
+        new PageDTO<GetAnswer>(
             page.getContent(),
             pagination
         ));
@@ -58,15 +63,21 @@ public class AnswerController {
 
   @PutMapping("/{id}")
   @Transactional
-  public ResponseEntity<Response> updateAnswer(@PathVariable Long id, @RequestBody UpdateAnswerDTO payload) {
+  public ResponseEntity<Response> updateAnswer(@PathVariable Long id,
+                                               @RequestBody UpdateAnswerDTO payload,
+                                               Authentication authentication) {
+    UserDetails user = (UserDetails) authentication.getPrincipal();
+
     return ResponseEntity.ok().body(
-        new Response(true, this.answerService.updateAnswer(id, payload))
+        new Response(true, this.answerService.updateAnswer(id, payload, user.getUsername()))
     );
   }
 
   @DeleteMapping("/{id}")
   @Transactional
-  public ResponseEntity<Success> deleteAnswer(@PathVariable Long id) {
-    return ResponseEntity.ok().body(this.answerService.deleteAnswer(id));
+  public ResponseEntity<Success> deleteAnswer(@PathVariable Long id, Authentication authentication) {
+    UserDetails user = (UserDetails) authentication.getPrincipal();
+
+    return ResponseEntity.ok().body(this.answerService.deleteAnswer(id, user.getUsername()));
   }
 }
