@@ -8,6 +8,8 @@ import com.eduforum.api.forum_api.domain.user.model.Profile;
 import com.eduforum.api.forum_api.domain.user.model.User;
 import com.eduforum.api.forum_api.domain.user.repository.ProfileRepository;
 import com.eduforum.api.forum_api.domain.user.repository.UserRepository;
+import com.eduforum.api.forum_api.infra.errors.BadRequestException;
+import com.eduforum.api.forum_api.infra.errors.ForbiddenException;
 import com.eduforum.api.forum_api.infra.errors.ValidateException;
 import com.eduforum.api.forum_api.infra.security.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +42,7 @@ public class UserService {
   public GetUser signUpUser(CreateUserDTO payload) {
     var exitsEmail = this.userRepository.existsByEmail(payload.email());
     if (exitsEmail) {
-      throw new ValidateException("email (" + payload.email() + ") already exists");
+      throw new BadRequestException("email (" + payload.email() + ") already exists");
     }
     var passwordEncode = bCryptPasswordEncoder.encode(payload.password());
     User user = this.userRepository.save(new User(payload.email(), passwordEncode));
@@ -58,7 +60,7 @@ public class UserService {
     try {
       authenticateUser = authenticationManager.authenticate(token);
     } catch (RuntimeException e) {
-      throw new ValidateException("email or password incorrect");
+      throw new ForbiddenException("email or password incorrect");
     }
     return tokenService.generatedToken((User) authenticateUser.getPrincipal());
   }

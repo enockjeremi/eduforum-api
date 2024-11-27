@@ -21,6 +21,27 @@ public class ErrorHandling {
         new ResponseException(now, false, HttpStatus.NOT_FOUND.value(), "Not Found", e.getMessage()));
   }
 
+  @ExceptionHandler(UnauthorizedException.class)
+  public ResponseEntity<ResponseException> errorUnauthorized(UnauthorizedException e) {
+    now = OffsetDateTime.now();
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+        new ResponseException(now, false, HttpStatus.UNAUTHORIZED.value(), "Unauthorized", e.getMessage()));
+  }
+
+  @ExceptionHandler(ForbiddenException.class)
+  public ResponseEntity<ResponseException> errorForbidden(ForbiddenException e) {
+    now = OffsetDateTime.now();
+    return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
+        new ResponseException(now, false, HttpStatus.FORBIDDEN.value(), "Forbidden", e.getMessage()));
+  }
+
+  @ExceptionHandler(BadRequestException.class)
+  public ResponseEntity<ResponseException> errorBadRequest(BadRequestException e) {
+    now = OffsetDateTime.now();
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+        new ResponseException(now, false, HttpStatus.BAD_REQUEST.value(), "Bad Request", e.getMessage()));
+  }
+
   @ExceptionHandler(MethodArgumentNotValidException.class)
   public ResponseEntity<ResponseBadRequestException> errorBadRequest(MethodArgumentNotValidException e) {
     now = OffsetDateTime.now();
