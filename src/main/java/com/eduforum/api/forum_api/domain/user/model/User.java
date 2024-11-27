@@ -1,5 +1,6 @@
 package com.eduforum.api.forum_api.domain.user.model;
 
+import com.eduforum.api.forum_api.domain.topic.model.Topic;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -27,10 +28,15 @@ public class User implements UserDetails {
   @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
   private Profile profile;
 
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  private List<Topic> topic;
+
   public User(String email, String password) {
     this.email = email;
     this.password = password;
   }
+
+
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {

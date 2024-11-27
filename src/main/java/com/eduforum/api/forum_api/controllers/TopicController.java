@@ -5,6 +5,7 @@ import com.eduforum.api.forum_api.domain.serializer.PageMetadata;
 import com.eduforum.api.forum_api.domain.serializer.Response;
 import com.eduforum.api.forum_api.domain.serializer.Success;
 import com.eduforum.api.forum_api.domain.topic.dtos.CreateTopicDTO;
+import com.eduforum.api.forum_api.domain.topic.dtos.GetAllTopic;
 import com.eduforum.api.forum_api.domain.topic.dtos.GetTopic;
 import com.eduforum.api.forum_api.domain.topic.dtos.UpdateTopicDTO;
 import com.eduforum.api.forum_api.domain.topic.service.TopicService;
@@ -15,6 +16,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -33,20 +36,23 @@ public class TopicController {
 
   @PostMapping
   public ResponseEntity<Response> createTopic(@RequestBody @Valid CreateTopicDTO payload,
-                                              UriComponentsBuilder uriComponentsBuilder) {
-    GetTopic topic = this.topicService.createTopic(payload);
+                                              UriComponentsBuilder uriComponentsBuilder,
+                                              Authentication authentication) {
+    UserDetails user = (UserDetails) authentication.getPrincipal();
+
+    GetTopic topic = this.topicService.createTopic(payload, user.getUsername());
     URI uri = uriComponentsBuilder.path("/topics/{id}").buildAndExpand(topic.id()).toUri();
     return ResponseEntity.created(uri).body(new Response(true, topic));
   }
 
   @GetMapping
-  public ResponseEntity<PageDTO<GetTopic>> getAllTopic(@PageableDefault(
+  public ResponseEntity<PageDTO<GetAllTopic>> getAllTopic(@PageableDefault(
       size = 5
   ) Pageable pageable) {
-    Page<GetTopic> page = this.topicService.getAllTopic(pageable);
-    PageMetadata<GetTopic> pagination = new PageMetadata<GetTopic>(page);
+    Page<GetAllTopic> page = this.topicService.getAllTopic(pageable);
+    PageMetadata<GetAllTopic> pagination = new PageMetadata<GetAllTopic>(page);
     return ResponseEntity.ok(
-        new PageDTO<GetTopic>(
+        new PageDTO<GetAllTopic>(
             page.getContent(),
             pagination
         ));
@@ -61,22 +67,30 @@ public class TopicController {
 
   @PutMapping("/{id}")
   @Transactional
-  public ResponseEntity<Response> updateTopic(@PathVariable Long id, @RequestBody UpdateTopicDTO payload) {
+  public ResponseEntity<Response> updateTopic(@PathVariable Long id,
+                                              @RequestBody UpdateTopicDTO payload,
+                                              Authentication authentication) {
+    UserDetails user = (UserDetails) authentication.getPrincipal();
+
     return ResponseEntity.ok().body(
-        new Response(true, this.topicService.updateTopic(id, payload))
+        new Response(true, this.topicService.updateTopic(id, payload, user.getUsername()))
     );
   }
 
   @DeleteMapping("/{id}")
   @Transactional
-  public ResponseEntity<Success> deleteTopic(@PathVariable Long id) {
-    return ResponseEntity.ok().body(this.topicService.deleteTopic(id));
+  public ResponseEntity<Success> deleteTopic(@PathVariable Long id, Authentication authentication) {
+    UserDetails user = (UserDetails) authentication.getPrincipal();
+
+    return ResponseEntity.ok().body(this.topicService.deleteTopic(id, user.getUsername()));
   }
 
   @PatchMapping("/{id}/status")
   @Transactional
-  public ResponseEntity<Response> changeStatus(@PathVariable Long id) {
-    GetTopic topic = this.topicService.changeStatus(id);
+  public ResponseEntity<Response> changeStatus(@PathVariable Long id, Authentication authentication) {
+    UserDetails user = (UserDetails) authentication.getPrincipal();
+
+    GetTopic topic = this.topicService.changeStatus(id, user.getUsername());
     return ResponseEntity.ok().body(
         new Response(true, topic)
     );

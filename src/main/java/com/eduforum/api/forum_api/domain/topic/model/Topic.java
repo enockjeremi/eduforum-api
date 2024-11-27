@@ -3,6 +3,7 @@ package com.eduforum.api.forum_api.domain.topic.model;
 import com.eduforum.api.forum_api.domain.answer.model.Answer;
 import com.eduforum.api.forum_api.domain.course.model.Course;
 import com.eduforum.api.forum_api.domain.topic.dtos.UpdateTopicDTO;
+import com.eduforum.api.forum_api.domain.user.model.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -36,16 +37,21 @@ public class Topic {
   @OneToMany(mappedBy = "topic", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
   private List<Answer> answers;
 
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "user_id", nullable = false)
+  private User user;
+
   @CreationTimestamp
   private Instant createdOn;
   @UpdateTimestamp
   private Instant lastUpdatedOn;
 
-  public Topic(Course course, String content, String title) {
+  public Topic(Course course, String content, String title, User user) {
     this.status = true;
     this.course = course;
     this.content = content;
     this.title = title;
+    this.user = user;
   }
 
   public void updateTopic(UpdateTopicDTO payload) {

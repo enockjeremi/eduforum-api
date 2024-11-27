@@ -50,6 +50,11 @@ public class UserService {
     return new GetUser(user.getId(), user.getEmail(), new GetProfile(profile));
   }
 
+  public User findUserByEmail(String email) {
+    return this.userRepository.findUserByEmail(email).orElseThrow(() ->
+        new ValidateException("user with email (" + email + ") not found")
+    );
+  }
 
   public String signIn(AuthenticateUserDTO authUser) {
     Authentication authenticateUser = null;
