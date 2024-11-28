@@ -31,8 +31,10 @@ public class SecurityConfigurations {
     return httpSecurity.csrf(AbstractHttpConfigurer::disable)
         .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(request -> {
-          request.requestMatchers(HttpMethod.GET, "/topics/**", "/answers/**").permitAll();
+          request.requestMatchers(HttpMethod.GET, "/topics/**", "/answers/**", "/courses/**").permitAll();
           request.requestMatchers(HttpMethod.POST, "/auth/sign-in", "/auth/sign-up").permitAll();
+          request.requestMatchers("/courses/**").hasRole("ADMIN");
+
           request.anyRequest().authenticated();
         })
         .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)

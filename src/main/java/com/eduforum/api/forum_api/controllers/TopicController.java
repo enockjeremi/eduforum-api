@@ -46,10 +46,15 @@ public class TopicController {
   }
 
   @GetMapping
-  public ResponseEntity<PageDTO<GetAllTopic>> getAllTopic(@PageableDefault(
-      size = 5
-  ) Pageable pageable) {
-    Page<GetAllTopic> page = this.topicService.getAllTopic(pageable);
+  public ResponseEntity<PageDTO<GetAllTopic>> getAllTopic(
+      @PageableDefault(size = 5) Pageable pageable,
+      @RequestParam(required = false) String search) {
+    Page<GetAllTopic> page;
+    if (search != null) {
+      page = this.topicService.findByTitle(pageable, search);
+    } else {
+      page = this.topicService.getAllTopic(pageable);
+    }
     PageMetadata<GetAllTopic> pagination = new PageMetadata<GetAllTopic>(page);
     return ResponseEntity.ok(
         new PageDTO<GetAllTopic>(
@@ -95,4 +100,5 @@ public class TopicController {
         new Response(true, topic)
     );
   }
+
 }

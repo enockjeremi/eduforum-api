@@ -42,6 +42,10 @@ public class TopicService {
     return this.topicRepository.findAll(pageable).map(GetAllTopic::new);
   }
 
+  public Page<GetAllTopic> findByTitle(Pageable pageable, String title) {
+    return this.topicRepository.findByTitleContainsIgnoreCase(pageable, title).map(GetAllTopic::new);
+  }
+
   public Topic findTopic(Long id) {
     return this.topicRepository.findById(id).orElseThrow(() ->
         new ValidateException("topic with id (" + id + ") not found")

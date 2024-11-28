@@ -1,0 +1,1 @@
+alter table users modify column role_id bigint not null default 1;

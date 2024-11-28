@@ -1,0 +1,24 @@
+reglas de negocio (eduforum)
+
+- * CRU para Cursos
+(Los cursos no podran ser eliminados, esto pues estamos
+suponiendo que, los cursos vienen de una entidad mayor)
+
+- * CRUD para Topicos
+- * CRUD para Respuestas
+- * Autenticacion de usuarios
+- * Autorizacion por roles
+
+- * Busqueda de topicos por titulo
+- Listar topicos por Curso
+- Listar topicos por la categoria de el curso
+
+- * Cada topico y respuesta debe tener un autor (usuario)
+- * Los topicos y respuestas solo pueden ser editados
+y eliminados por su autor
+- Un usuario admin, puede editar y eliminar, topicos
+y respuestas
+
+- Al seleccionar una respuesta (solucion), el topico pasa estar inactivo
+- Tanto el autor como el usuario admin pueden seleccionar
+la respuesta que da solucion al Topico
