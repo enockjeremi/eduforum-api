@@ -6,8 +6,8 @@ import com.eduforum.api.forum_api.domain.course.model.Course;
 import com.eduforum.api.forum_api.domain.course.service.CourseService;
 import com.eduforum.api.forum_api.domain.serializer.Success;
 import com.eduforum.api.forum_api.domain.topic.dtos.CreateTopicDTO;
-import com.eduforum.api.forum_api.domain.topic.dtos.GetTopicWithOutAuthor;
 import com.eduforum.api.forum_api.domain.topic.dtos.GetTopicWithAuthor;
+import com.eduforum.api.forum_api.domain.topic.dtos.GetTopicWithOutAuthor;
 import com.eduforum.api.forum_api.domain.topic.dtos.UpdateTopicDTO;
 import com.eduforum.api.forum_api.domain.topic.model.Topic;
 import com.eduforum.api.forum_api.domain.topic.repository.TopicRepository;
@@ -95,7 +95,7 @@ public class TopicService {
     boolean isAdmin = user.getRoles().stream()
         .anyMatch(role -> "ROLE_ADMIN".equals(role.getName()));
     if (!isAdmin && !topic.getUser().equals(user)) {
-      throw new ForbiddenException("Permission denied.");
+      throw new ForbiddenException("permission denied.");
     }
   }
 
@@ -111,7 +111,7 @@ public class TopicService {
         new ValidateException("answer with id (" + idAnswer + ") not found"));
     var isAnswerValid = topic.getAnswers().stream().anyMatch(a -> a.equals(answer));
     if (!isAnswerValid) {
-      throw new ValidateException("No pertenece al topico");
+      throw new ValidateException("answer with id (" + idAnswer + ") not found");
     }
     topic.addSolution(answer);
     answer.isSolution();

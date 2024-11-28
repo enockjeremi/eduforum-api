@@ -2,7 +2,6 @@ package com.eduforum.api.forum_api.controllers;
 
 
 import com.eduforum.api.forum_api.domain.answer.dtos.CreateAnswerDTO;
-import com.eduforum.api.forum_api.domain.answer.dtos.GetAllAnswerByTopic;
 import com.eduforum.api.forum_api.domain.answer.dtos.GetAnswer;
 import com.eduforum.api.forum_api.domain.answer.dtos.UpdateAnswerDTO;
 import com.eduforum.api.forum_api.domain.answer.service.AnswerService;
