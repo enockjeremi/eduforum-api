@@ -20,6 +20,6 @@ y eliminados por su autor
 - * Un usuario admin, puede editar y eliminar, topicos
 y respuestas
 
-- Al seleccionar una respuesta (solucion), el topico pasa estar inactivo
-- Tanto el autor como el usuario admin pueden seleccionar
+- * Al seleccionar una respuesta (solucion), el topico pasa estar inactivo
+- * Tanto el autor como el usuario admin pueden seleccionar
 la respuesta que da solucion al Topico

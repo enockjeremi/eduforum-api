@@ -6,7 +6,7 @@ import com.eduforum.api.forum_api.domain.user.dtos.GetUserWithProfile;
 
 import java.time.Instant;
 
-public record GetTopic(
+public record GetTopicWithAuthor(
     Long id,
     String title,
     String content,
@@ -15,7 +15,7 @@ public record GetTopic(
     GetUserWithProfile author,
     Instant createdOn
 ) {
-  public GetTopic(Topic topic) {
+  public GetTopicWithAuthor(Topic topic) {
     this(topic.getId(),
         topic.getTitle(),
         topic.getContent(),

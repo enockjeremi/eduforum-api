@@ -20,6 +20,7 @@ target/
 *.ipr
 .env
 /mysql_data
+/mysql_data_test
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/

@@ -1,7 +1,6 @@
 package com.eduforum.api.forum_api.domain.answer.model;
 
 import com.eduforum.api.forum_api.domain.answer.dtos.UpdateAnswerDTO;
-import com.eduforum.api.forum_api.domain.topic.dtos.UpdateTopicDTO;
 import com.eduforum.api.forum_api.domain.topic.model.Topic;
 import com.eduforum.api.forum_api.domain.user.model.User;
 import jakarta.persistence.*;
@@ -54,4 +53,7 @@ public class Answer {
     }
   }
 
+  public void isSolution() {
+    this.solution = true;
+  }
 }

@@ -1,13 +1,11 @@
 package com.eduforum.api.forum_api.domain.answer.service;
 
 import com.eduforum.api.forum_api.domain.answer.dtos.CreateAnswerDTO;
-import com.eduforum.api.forum_api.domain.answer.dtos.GetAllAnswerByTopic;
 import com.eduforum.api.forum_api.domain.answer.dtos.GetAnswer;
 import com.eduforum.api.forum_api.domain.answer.dtos.UpdateAnswerDTO;
 import com.eduforum.api.forum_api.domain.answer.model.Answer;
 import com.eduforum.api.forum_api.domain.answer.repository.AnswerRepository;
 import com.eduforum.api.forum_api.domain.serializer.Success;
-import com.eduforum.api.forum_api.domain.topic.model.Topic;
 import com.eduforum.api.forum_api.domain.topic.service.TopicService;
 import com.eduforum.api.forum_api.domain.user.service.UserService;
 import com.eduforum.api.forum_api.infra.errors.ForbiddenException;

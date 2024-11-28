@@ -5,8 +5,8 @@ import com.eduforum.api.forum_api.domain.serializer.PageMetadata;
 import com.eduforum.api.forum_api.domain.serializer.Response;
 import com.eduforum.api.forum_api.domain.serializer.Success;
 import com.eduforum.api.forum_api.domain.topic.dtos.CreateTopicDTO;
-import com.eduforum.api.forum_api.domain.topic.dtos.GetAllTopic;
-import com.eduforum.api.forum_api.domain.topic.dtos.GetTopic;
+import com.eduforum.api.forum_api.domain.topic.dtos.GetTopicWithOutAuthor;
+import com.eduforum.api.forum_api.domain.topic.dtos.GetTopicWithAuthor;
 import com.eduforum.api.forum_api.domain.topic.dtos.UpdateTopicDTO;
 import com.eduforum.api.forum_api.domain.topic.service.TopicService;
 import jakarta.transaction.Transactional;
@@ -40,24 +40,24 @@ public class TopicController {
                                               Authentication authentication) {
     UserDetails user = (UserDetails) authentication.getPrincipal();
 
-    GetTopic topic = this.topicService.createTopic(payload, user.getUsername());
+    GetTopicWithAuthor topic = this.topicService.createTopic(payload, user.getUsername());
     URI uri = uriComponentsBuilder.path("/topics/{id}").buildAndExpand(topic.id()).toUri();
     return ResponseEntity.created(uri).body(new Response(true, topic));
   }
 
   @GetMapping
-  public ResponseEntity<PageDTO<GetAllTopic>> getAllTopic(
+  public ResponseEntity<PageDTO<GetTopicWithOutAuthor>> getAllTopic(
       @PageableDefault(size = 5) Pageable pageable,
       @RequestParam(required = false) String search) {
-    Page<GetAllTopic> page;
+    Page<GetTopicWithOutAuthor> page;
     if (search != null) {
       page = this.topicService.findByTitle(pageable, search);
     } else {
       page = this.topicService.getAllTopic(pageable);
     }
-    PageMetadata<GetAllTopic> pagination = new PageMetadata<GetAllTopic>(page);
+    PageMetadata<GetTopicWithOutAuthor> pagination = new PageMetadata<GetTopicWithOutAuthor>(page);
     return ResponseEntity.ok(
-        new PageDTO<GetAllTopic>(
+        new PageDTO<GetTopicWithOutAuthor>(
             page.getContent(),
             pagination
         ));
@@ -90,43 +90,47 @@ public class TopicController {
     return ResponseEntity.ok().body(this.topicService.deleteTopic(id, user.getUsername()));
   }
 
-  @PatchMapping("/{id}/status")
-  @Transactional
-  public ResponseEntity<Response> changeStatus(@PathVariable Long id, Authentication authentication) {
-    UserDetails user = (UserDetails) authentication.getPrincipal();
-
-    GetTopic topic = this.topicService.changeStatus(id, user.getUsername());
-    return ResponseEntity.ok().body(
-        new Response(true, topic)
-    );
-  }
-
   @GetMapping("/c/{idCourse}")
-  public ResponseEntity<PageDTO<GetAllTopic>> getTopicByCourse(
+  public ResponseEntity<PageDTO<GetTopicWithOutAuthor>> getTopicByCourse(
       @PageableDefault(size = 5) Pageable pageable,
       @PathVariable Long idCourse) {
-    Page<GetAllTopic> page = this.topicService.findByCourseId(pageable, idCourse);
+    Page<GetTopicWithOutAuthor> page = this.topicService.findByCourseId(pageable, idCourse);
 
-    PageMetadata<GetAllTopic> pagination = new PageMetadata<GetAllTopic>(page);
+    PageMetadata<GetTopicWithOutAuthor> pagination = new PageMetadata<GetTopicWithOutAuthor>(page);
     return ResponseEntity.ok(
-        new PageDTO<GetAllTopic>(
+        new PageDTO<GetTopicWithOutAuthor>(
             page.getContent(),
             pagination
         ));
   }
 
   @GetMapping("/category/{category}")
-  public ResponseEntity<PageDTO<GetAllTopic>> getTopicByCategoryCourse(
+  public ResponseEntity<PageDTO<GetTopicWithOutAuthor>> getTopicByCategoryCourse(
       @PageableDefault(size = 5) Pageable pageable,
       @PathVariable String category) {
 
-    Page<GetAllTopic> page = this.topicService.findTopicsByCourseCategory(pageable, category.replace("+", " ").trim());
+    Page<GetTopicWithOutAuthor> page = this.topicService.findTopicsByCourseCategory(pageable, category.replace("+", " ").trim());
 
-    PageMetadata<GetAllTopic> pagination = new PageMetadata<GetAllTopic>(page);
+    PageMetadata<GetTopicWithOutAuthor> pagination = new PageMetadata<GetTopicWithOutAuthor>(page);
     return ResponseEntity.ok(
-        new PageDTO<GetAllTopic>(
+        new PageDTO<GetTopicWithOutAuthor>(
             page.getContent(),
             pagination
         ));
   }
+
+  @PatchMapping("/{idTopic}/s/{idAnswer}")
+  @Transactional
+  public ResponseEntity<Response> solutionAnswer(
+      @PathVariable Long idTopic,
+      @PathVariable Long idAnswer,
+      Authentication authentication) {
+    UserDetails user = (UserDetails) authentication.getPrincipal();
+
+    GetTopicWithAuthor topic = this.topicService.solutionAnswer(idTopic,idAnswer, user.getUsername());
+    return ResponseEntity.ok().body(
+        new Response(true, topic)
+    );
+  }
+
 }

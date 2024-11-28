@@ -41,6 +41,10 @@ public class Topic {
   @JoinColumn(name = "user_id", nullable = false)
   private User user;
 
+  @OneToOne
+  @JoinColumn(name = "solution_answer_id", referencedColumnName = "id")
+  private Answer solutionAnswer;
+
   @CreationTimestamp
   private Instant createdOn;
   @UpdateTimestamp
@@ -64,5 +68,10 @@ public class Topic {
 
   public void changeStatus() {
     this.status = !this.status;
+  }
+
+  public void addSolution(Answer answer) {
+    this.solutionAnswer = answer;
+    this.status = false;
   }
 }
