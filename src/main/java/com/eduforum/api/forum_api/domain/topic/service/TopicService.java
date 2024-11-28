@@ -9,6 +9,7 @@ import com.eduforum.api.forum_api.domain.topic.dtos.GetTopic;
 import com.eduforum.api.forum_api.domain.topic.dtos.UpdateTopicDTO;
 import com.eduforum.api.forum_api.domain.topic.model.Topic;
 import com.eduforum.api.forum_api.domain.topic.repository.TopicRepository;
+import com.eduforum.api.forum_api.domain.user.model.Role;
 import com.eduforum.api.forum_api.domain.user.service.UserService;
 import com.eduforum.api.forum_api.infra.errors.ForbiddenException;
 import com.eduforum.api.forum_api.infra.errors.ValidateException;
@@ -16,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class TopicService {
@@ -59,7 +62,7 @@ public class TopicService {
 
   public GetTopic updateTopic(Long id, UpdateTopicDTO payload, String email) {
     Topic topic = this.findTopic(id);
-    verifyAuthor(topic, email);
+    verifyAdminOrAuthor(topic, email);
 
     topic.updateTopic(payload);
     return new GetTopic(topic);
@@ -67,7 +70,7 @@ public class TopicService {
 
   public Success deleteTopic(Long id, String email) {
     Topic topic = this.findTopic(id);
-    verifyAuthor(topic, email);
+    verifyAdminOrAuthor(topic, email);
 
     this.topicRepository.delete(topic);
     return new Success(true, "topic with id (" + id + ") deleted");
@@ -75,10 +78,14 @@ public class TopicService {
 
   public GetTopic changeStatus(Long id, String email) {
     Topic topic = this.findTopic(id);
-    verifyAuthor(topic, email);
+    verifyAdminOrAuthor(topic, email);
 
     topic.changeStatus();
     return new GetTopic(topic);
+  }
+
+  public Page<GetAllTopic> findByCourseId(Pageable pageable, Long idCourse) {
+    return this.topicRepository.findByCourseId(pageable, idCourse).map(GetAllTopic::new);
   }
 
   public void verifyAuthor(Topic topic, String email) {
@@ -86,5 +93,19 @@ public class TopicService {
     if (topic.getUser() != user) {
       throw new ForbiddenException("permission denied.");
     }
+  }
+
+  public void verifyAdminOrAuthor(Topic topic, String email) {
+    var user = this.userService.findUserByEmail(email);
+    boolean isAdmin = user.getRoles().stream()
+        .anyMatch(role -> "ROLE_ADMIN".equals(role.getName()));
+    if (!isAdmin && !topic.getUser().equals(user)) {
+      throw new ForbiddenException("Permission denied.");
+    }
+  }
+
+
+  public Page<GetAllTopic> findTopicsByCourseCategory(Pageable pageable, String category) {
+    return this.topicRepository.findTopicsByCourseCategory(pageable, category).map(GetAllTopic::new);
   }
 }

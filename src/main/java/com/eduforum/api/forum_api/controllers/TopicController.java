@@ -101,4 +101,32 @@ public class TopicController {
     );
   }
 
+  @GetMapping("/c/{idCourse}")
+  public ResponseEntity<PageDTO<GetAllTopic>> getTopicByCourse(
+      @PageableDefault(size = 5) Pageable pageable,
+      @PathVariable Long idCourse) {
+    Page<GetAllTopic> page = this.topicService.findByCourseId(pageable, idCourse);
+
+    PageMetadata<GetAllTopic> pagination = new PageMetadata<GetAllTopic>(page);
+    return ResponseEntity.ok(
+        new PageDTO<GetAllTopic>(
+            page.getContent(),
+            pagination
+        ));
+  }
+
+  @GetMapping("/category/{category}")
+  public ResponseEntity<PageDTO<GetAllTopic>> getTopicByCategoryCourse(
+      @PageableDefault(size = 5) Pageable pageable,
+      @PathVariable String category) {
+
+    Page<GetAllTopic> page = this.topicService.findTopicsByCourseCategory(pageable, category.replace("+", " ").trim());
+
+    PageMetadata<GetAllTopic> pagination = new PageMetadata<GetAllTopic>(page);
+    return ResponseEntity.ok(
+        new PageDTO<GetAllTopic>(
+            page.getContent(),
+            pagination
+        ));
+  }
 }

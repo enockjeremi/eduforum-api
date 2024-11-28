@@ -23,6 +23,7 @@ public class Course {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long Id;
   private String name;
+  @Column(name = "category")
   private String category;
 
   @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
