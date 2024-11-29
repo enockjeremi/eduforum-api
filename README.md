@@ -1,54 +1,53 @@
-
 # Eduforum
 
-Rest API creada para el Challenge de Alura.
+Rest API created for the Alura Challenge.
 
-API para la plataforma eduforum, desarrollada en Java usando Spring Boot.
+API for the Eduforum platform, developed in Java using Spring Boot.
 
+## Installation
 
-## Instalacion
+Java JDK 17 is required for this project.  
+In the root directory, you'll find a `.env.example` file. Add the necessary environment variables for database connection there.
 
-Es necesario tener la version 17 de el JDK.
-En la raiz esta un archivo .env.example, en este deben agregar las variables de entorno para la conexion a la DB.
+To run the database, use a Docker container. You'll also find a `.yml` file with a pre-configured setup for the container.
 
-Para la ejecucion de la base de datos, use un contenedor de docker, tambien encontraran un archivo .yml que tiene una
-previa configuracion del contenedor.
+## Resources Used
 
-## Recursos utilizados
-para este proyecto se usaron diversas dependencias, especificas para cada tarea.
+This project leverages various dependencies, each tailored to specific tasks:
 
-- Spring Data JPA, para el manejo de consultas a la base de datos.
-- Spring Security, para el control de autenticacion y autorizacion.
-- Auth0, para generar el token de acceso (JWT)
-- Bean Validation, para validar los DTOs
-- Flyway, para gestionar las migraciones a la base de datos.
-- Lombok, para evitar el codigo repetitivo.
+- **Spring Data JPA**: For database queries and management.
+- **Spring Security**: For authentication and authorization control.
+- **Auth0**: To generate access tokens (JWT).
+- **Bean Validation**: To validate DTOs.
+- **Flyway**: To manage database migrations.
+- **Lombok**: To reduce boilerplate code.
+- **Spring Doc (OpenAPI)**: For API documentation.
 
-## Caracteristicas
+## Features
 
-- CRUD para Cursos
-- CRUD para Tópicos
-- CRUD para Respuestas
-- Autenticación de Usuarios 
-- Autorización por Roles 
-- Búsqueda de Tópicos por Título
-- Listar Tópicos por Curso 
-- Listar Tópicos por Categoría de Curso 
-- Cada Topico y Respuesta debe tener su respectivo autor
-- Restricciones de Edición y Eliminación 
-- Selección de Respuesta Solucionadora
-- Cuando un usuario selecciona una respuesta como la que resuelve su tópico, el estado del tópico pasa a inactivo, indicando que ya no se requieren más respuestas.
-- Tanto el autor del tópico como un usuario administrador tienen permisos para seleccionar cuál es la respuesta que da solución al tópico.
-- Un usuario admin tiene los permisos necesarios para editar y eliminar tanto topicos, como respuestas 
+- **CRUD for Courses**
+- **CRUD for Topics**
+- **CRUD for Answers**
+- **User Authentication**
+- **Role-Based Authorization**
+- **Search Topics by Title**
+- **List Topics by Course**
+- **List Topics by Course Category**
+- **Author Attribution**: Every topic and answer must have an author.
+- **Editing and Deletion Restrictions**:
+    - Only the author of a topic or answer can edit or delete it.
+    - Admin users have permissions to edit and delete any topic or answer.
+- **Solution Selection**:
+    - When a user selects an answer as the solution to their topic, the topic's status is set to inactive, indicating no further responses are needed.
+    - Both the topic's author and an admin can select the solution answer.
 
-## Comentario
+## Notes
 
-Si bien para el challenge no era necesario agregar tantas caracteristicas, me resulto muy buena practica hacerlo.
-Me gusto mucho la forma en la que se trabaja con Spring Boot, es un framework muy poderoso.
+While the challenge didn’t require adding so many features, it was a great learning experience.  
+I really enjoyed working with Spring Boot—it’s a very powerful framework.
 
-La parte que mas me costo incluir, sin dudas fue la autorizacion, ya que no fue un tema tocado en los diferentes cursos, pero con la ayuda de google y la documentacion, todo es posible.
+The most challenging part was implementing authorization, as it wasn’t covered in the courses I took. However, with the help of Google and the documentation, everything is possible.
 
-
-## Autor
+## Author
 
 - [@enockjeremi](https://www.github.com/enockjeremi)

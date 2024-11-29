@@ -5,6 +5,8 @@ import com.eduforum.api.forum_api.domain.user.dtos.AuthenticateUserDTO;
 import com.eduforum.api.forum_api.domain.user.dtos.CreateUserDTO;
 import com.eduforum.api.forum_api.domain.user.dtos.GetToken;
 import com.eduforum.api.forum_api.domain.user.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+@Tag(name = "Authentication")
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -25,6 +28,7 @@ public class AuthController {
     this.userService = userService;
   }
 
+  @Operation(summary = "Register user")
   @PostMapping("/sign-up")
   public ResponseEntity<Response> signUpUser(@RequestBody @Valid CreateUserDTO payload,
                                              UriComponentsBuilder uriComponentsBuilder) {
@@ -36,6 +40,7 @@ public class AuthController {
     );
   }
 
+  @Operation(summary = "Login user")
   @PostMapping("/sign-in")
   public ResponseEntity<GetToken> signInUser(@RequestBody @Valid AuthenticateUserDTO authUser) {
     var token = this.userService.signIn(authUser);

@@ -7,6 +7,9 @@ import com.eduforum.api.forum_api.domain.course.service.CourseService;
 import com.eduforum.api.forum_api.domain.serializer.PageDTO;
 import com.eduforum.api.forum_api.domain.serializer.PageMetadata;
 import com.eduforum.api.forum_api.domain.serializer.Response;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,14 +17,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 
+@Tag(name = "Course")
 @RestController
 @RequestMapping("/courses")
+@SecurityRequirement(name = "bearer-key")
 public class CourseController {
 
   private final CourseService courseService;
@@ -31,7 +35,7 @@ public class CourseController {
     this.courseService = courseService;
   }
 
-  @PreAuthorize("hasRole('ADMIN')")
+  @Operation(summary = "Create new course - Only Admin")
   @PostMapping
   public ResponseEntity<Response> createCourse(@RequestBody @Valid CreateCourseDTO payload,
                                                UriComponentsBuilder uriComponentsBuilder) {
@@ -42,6 +46,7 @@ public class CourseController {
     );
   }
 
+  @Operation(summary = "Get all courses")
   @GetMapping
   public ResponseEntity<PageDTO<GetCourse>> getAllCourses(@PageableDefault(
       size = 5
@@ -55,6 +60,7 @@ public class CourseController {
         ));
   }
 
+  @Operation(summary = "Get course by id")
   @GetMapping("/{id}")
   public ResponseEntity<Response> getCourse(@PathVariable Long id) {
     return ResponseEntity.ok().body(
@@ -62,11 +68,21 @@ public class CourseController {
     );
   }
 
+  @Operation(summary = "Update course - Only Admin")
   @PutMapping("/{id}")
   @Transactional
   public ResponseEntity<Response> updateCourse(@PathVariable Long id, @RequestBody UpdateCourseDTO payload) {
     return ResponseEntity.ok().body(
         new Response(true, this.courseService.updateCourse(id, payload))
+    );
+  }
+
+  @Operation(summary = "Delete course - Only Admin")
+  @DeleteMapping("/{id}")
+  @Transactional
+  public ResponseEntity<Response> deleteCourse(@PathVariable Long id) {
+    return ResponseEntity.ok().body(
+        new Response(true, this.courseService.deleteCourse(id))
     );
   }
 }

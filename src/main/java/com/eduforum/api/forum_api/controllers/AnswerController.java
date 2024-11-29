@@ -9,6 +9,9 @@ import com.eduforum.api.forum_api.domain.serializer.PageDTO;
 import com.eduforum.api.forum_api.domain.serializer.PageMetadata;
 import com.eduforum.api.forum_api.domain.serializer.Response;
 import com.eduforum.api.forum_api.domain.serializer.Success;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +26,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 
+@Tag(name = "Answer")
 @RestController
 @RequestMapping("/answers")
+@SecurityRequirement(name = "bearer-key")
 public class AnswerController {
 
   private final AnswerService answerService;
@@ -34,6 +39,7 @@ public class AnswerController {
     this.answerService = answerService;
   }
 
+  @Operation(summary = "Create new answer - Only authenticate User")
   @PostMapping
   public ResponseEntity<Response> createAnswer(@RequestBody @Valid CreateAnswerDTO payload,
                                                UriComponentsBuilder uriComponentsBuilder,
@@ -47,6 +53,7 @@ public class AnswerController {
     );
   }
 
+  @Operation(summary = "Get all answers by topic")
   @GetMapping("/t/{idTopic}")
   ResponseEntity<PageDTO<GetAnswer>> getAllAnswerByTopic(@PageableDefault(
       size = 5
@@ -60,6 +67,7 @@ public class AnswerController {
         ));
   }
 
+  @Operation(summary = "Update answer - Only authenticate User")
   @PutMapping("/{id}")
   @Transactional
   public ResponseEntity<Response> updateAnswer(@PathVariable Long id,
@@ -72,6 +80,7 @@ public class AnswerController {
     );
   }
 
+  @Operation(summary = "Delete answer - Only authenticate User")
   @DeleteMapping("/{id}")
   @Transactional
   public ResponseEntity<Success> deleteAnswer(@PathVariable Long id, Authentication authentication) {

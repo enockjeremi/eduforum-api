@@ -9,6 +9,9 @@ import com.eduforum.api.forum_api.domain.topic.dtos.GetTopicWithAuthor;
 import com.eduforum.api.forum_api.domain.topic.dtos.GetTopicWithOutAuthor;
 import com.eduforum.api.forum_api.domain.topic.dtos.UpdateTopicDTO;
 import com.eduforum.api.forum_api.domain.topic.service.TopicService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +26,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 
+@Tag(name = "Topic")
 @RestController
 @RequestMapping("/topics")
+@SecurityRequirement(name = "bearer-key")
 public class TopicController {
 
   private final TopicService topicService;
@@ -34,6 +39,7 @@ public class TopicController {
     this.topicService = topicService;
   }
 
+  @Operation(summary = "Create a new Topic - Only authenticate Users")
   @PostMapping
   public ResponseEntity<Response> createTopic(@RequestBody @Valid CreateTopicDTO payload,
                                               UriComponentsBuilder uriComponentsBuilder,
@@ -45,6 +51,7 @@ public class TopicController {
     return ResponseEntity.created(uri).body(new Response(true, topic));
   }
 
+  @Operation(summary = "Get all topics")
   @GetMapping
   public ResponseEntity<PageDTO<GetTopicWithOutAuthor>> getAllTopic(
       @PageableDefault(size = 5) Pageable pageable,
@@ -63,6 +70,7 @@ public class TopicController {
         ));
   }
 
+  @Operation(summary = "Get topic by id")
   @GetMapping("/{id}")
   public ResponseEntity<Response> getTopic(@PathVariable Long id) {
     return ResponseEntity.ok().body(
@@ -70,6 +78,7 @@ public class TopicController {
     );
   }
 
+  @Operation(summary = "Update topic - Only authenticate Users")
   @PutMapping("/{id}")
   @Transactional
   public ResponseEntity<Response> updateTopic(@PathVariable Long id,
@@ -82,6 +91,7 @@ public class TopicController {
     );
   }
 
+  @Operation(summary = "Delete topic - Only authenticate Users")
   @DeleteMapping("/{id}")
   @Transactional
   public ResponseEntity<Success> deleteTopic(@PathVariable Long id, Authentication authentication) {
@@ -90,6 +100,7 @@ public class TopicController {
     return ResponseEntity.ok().body(this.topicService.deleteTopic(id, user.getUsername()));
   }
 
+  @Operation(summary = "Get all topic by course")
   @GetMapping("/c/{idCourse}")
   public ResponseEntity<PageDTO<GetTopicWithOutAuthor>> getTopicByCourse(
       @PageableDefault(size = 5) Pageable pageable,
@@ -104,6 +115,7 @@ public class TopicController {
         ));
   }
 
+  @Operation(summary = "Get topic by category course")
   @GetMapping("/category/{category}")
   public ResponseEntity<PageDTO<GetTopicWithOutAuthor>> getTopicByCategoryCourse(
       @PageableDefault(size = 5) Pageable pageable,
@@ -119,6 +131,7 @@ public class TopicController {
         ));
   }
 
+  @Operation(summary = "Push solution answer to topic")
   @PatchMapping("/{idTopic}/s/{idAnswer}")
   @Transactional
   public ResponseEntity<Response> solutionAnswer(

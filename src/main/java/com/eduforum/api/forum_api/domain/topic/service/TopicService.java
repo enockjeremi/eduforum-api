@@ -83,12 +83,6 @@ public class TopicService {
     return this.topicRepository.findByCourseId(pageable, idCourse).map(GetTopicWithOutAuthor::new);
   }
 
-  public void verifyAuthor(Topic topic, String email) {
-    var user = this.userService.findUserByEmail(email);
-    if (topic.getUser() != user) {
-      throw new ForbiddenException("permission denied.");
-    }
-  }
 
   public void verifyAdminOrAuthor(Topic topic, String email) {
     var user = this.userService.findUserByEmail(email);
