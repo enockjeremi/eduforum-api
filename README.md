@@ -1,5 +1,6 @@
-![Eduforum Logo](https://raw.githubusercontent.com/enockjeremi/eduforum-api/refs/heads/main/src/main/resources/static/badge.png)
-
+<p align="center">
+  <img src="https://raw.githubusercontent.com/enockjeremi/eduforum-api/refs/heads/main/src/main/resources/static/badge.png" alt="Eduforum Logo" width="300">
+</p>
 # Eduforum
 
 Rest API created for the Alura Challenge.
