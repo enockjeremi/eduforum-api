@@ -1,3 +1,5 @@
+![Eduforum Logo](https://raw.githubusercontent.com/enockjeremi/eduforum-api/refs/heads/main/src/main/resources/static/badge.png)
+
 # Eduforum
 
 Rest API created for the Alura Challenge.
