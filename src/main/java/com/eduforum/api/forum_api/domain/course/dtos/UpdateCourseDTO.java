@@ -1,10 +1,10 @@
 package com.eduforum.api.forum_api.domain.course.dtos;
 
-import jakarta.validation.constraints.NotNull;
+import com.eduforum.api.forum_api.domain.course.model.Categories;
 
 public record UpdateCourseDTO(
     String name,
-    String category
+    Categories category
 ) {
 
 }

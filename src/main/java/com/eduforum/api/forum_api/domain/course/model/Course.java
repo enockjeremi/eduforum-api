@@ -24,7 +24,8 @@ public class Course {
   private Long Id;
   private String name;
   @Column(name = "category")
-  private String category;
+  @Enumerated(EnumType.STRING)
+  private Categories category;
 
   @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private List<Topic> topic;

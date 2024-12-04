@@ -2,12 +2,12 @@ package com.eduforum.api.forum_api.domain.topic.service;
 
 import com.eduforum.api.forum_api.domain.answer.model.Answer;
 import com.eduforum.api.forum_api.domain.answer.repository.AnswerRepository;
+import com.eduforum.api.forum_api.domain.course.model.Categories;
 import com.eduforum.api.forum_api.domain.course.model.Course;
 import com.eduforum.api.forum_api.domain.course.service.CourseService;
 import com.eduforum.api.forum_api.domain.serializer.Success;
 import com.eduforum.api.forum_api.domain.topic.dtos.CreateTopicDTO;
-import com.eduforum.api.forum_api.domain.topic.dtos.GetTopicWithAuthor;
-import com.eduforum.api.forum_api.domain.topic.dtos.GetTopicWithOutAuthor;
+import com.eduforum.api.forum_api.domain.topic.dtos.GetTopic;
 import com.eduforum.api.forum_api.domain.topic.dtos.UpdateTopicDTO;
 import com.eduforum.api.forum_api.domain.topic.model.Topic;
 import com.eduforum.api.forum_api.domain.topic.repository.TopicRepository;
@@ -37,19 +37,19 @@ public class TopicService {
     this.userService = userService;
   }
 
-  public GetTopicWithAuthor createTopic(CreateTopicDTO payload, String email) {
+  public GetTopic createTopic(CreateTopicDTO payload, String email) {
     var user = this.userService.findUserByEmail(email);
     Course course = this.courseService.findCourse(payload.idCourse());
     Topic topic = this.topicRepository.save(new Topic(course, payload.content(), payload.title(), user));
-    return new GetTopicWithAuthor(topic);
+    return new GetTopic(topic);
   }
 
-  public Page<GetTopicWithOutAuthor> getAllTopic(Pageable pageable) {
-    return this.topicRepository.findAll(pageable).map(GetTopicWithOutAuthor::new);
+  public Page<GetTopic> getAllTopic(Pageable pageable) {
+    return this.topicRepository.findAll(pageable).map(GetTopic::new);
   }
 
-  public Page<GetTopicWithOutAuthor> findByTitle(Pageable pageable, String title) {
-    return this.topicRepository.findByTitleContainsIgnoreCase(pageable, title).map(GetTopicWithOutAuthor::new);
+  public Page<GetTopic> findByTitle(Pageable pageable, String title) {
+    return this.topicRepository.findByTitleContainsIgnoreCase(pageable, title).map(GetTopic::new);
   }
 
   public Topic findTopic(Long id) {
@@ -58,17 +58,17 @@ public class TopicService {
     );
   }
 
-  public GetTopicWithAuthor getTopic(Long id) {
+  public GetTopic getTopic(Long id) {
     Topic topic = this.findTopic(id);
-    return new GetTopicWithAuthor(topic);
+    return new GetTopic(topic);
   }
 
-  public GetTopicWithAuthor updateTopic(Long id, UpdateTopicDTO payload, String email) {
+  public GetTopic updateTopic(Long id, UpdateTopicDTO payload, String email) {
     Topic topic = this.findTopic(id);
     verifyAdminOrAuthor(topic, email);
 
     topic.updateTopic(payload);
-    return new GetTopicWithAuthor(topic);
+    return new GetTopic(topic);
   }
 
   public Success deleteTopic(Long id, String email) {
@@ -79,8 +79,8 @@ public class TopicService {
     return new Success(true, "topic with id (" + id + ") deleted");
   }
 
-  public Page<GetTopicWithOutAuthor> findByCourseId(Pageable pageable, Long idCourse) {
-    return this.topicRepository.findByCourseId(pageable, idCourse).map(GetTopicWithOutAuthor::new);
+  public Page<GetTopic> findByCourseId(Pageable pageable, Long idCourse) {
+    return this.topicRepository.findByCourseId(pageable, idCourse).map(GetTopic::new);
   }
 
 
@@ -93,12 +93,11 @@ public class TopicService {
     }
   }
 
-
-  public Page<GetTopicWithOutAuthor> findTopicsByCourseCategory(Pageable pageable, String category) {
-    return this.topicRepository.findTopicsByCourseCategory(pageable, category).map(GetTopicWithOutAuthor::new);
+  public Page<GetTopic> findTopicsByCourseCategory(Pageable pageable, Categories category) {
+    return this.topicRepository.findTopicsByCourseCategoryIgnoreCase(pageable, category).map(GetTopic::new);
   }
 
-  public GetTopicWithAuthor solutionAnswer(Long idTopic, Long idAnswer, String email) {
+  public GetTopic solutionAnswer(Long idTopic, Long idAnswer, String email) {
     Topic topic = this.findTopic(idTopic);
     verifyAdminOrAuthor(topic, email);
     Answer answer = this.answerRepository.findById(idAnswer).orElseThrow(() ->
@@ -109,6 +108,6 @@ public class TopicService {
     }
     topic.addSolution(answer);
     answer.isSolution();
-    return new GetTopicWithAuthor(topic);
+    return new GetTopic(topic);
   }
 }

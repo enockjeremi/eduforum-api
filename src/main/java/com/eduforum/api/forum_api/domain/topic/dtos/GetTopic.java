@@ -6,22 +6,24 @@ import com.eduforum.api.forum_api.domain.user.dtos.GetUserWithProfile;
 
 import java.time.Instant;
 
-public record GetTopicWithAuthor(
+public record GetTopic(
     Long id,
     String title,
     String content,
     Boolean status,
+    Integer answersTotal,
     GetCourse course,
     GetUserWithProfile author,
-    Instant createdOn
+    Instant updatedOn
 ) {
-  public GetTopicWithAuthor(Topic topic) {
+  public GetTopic(Topic topic) {
     this(topic.getId(),
         topic.getTitle(),
         topic.getContent(),
         topic.getStatus(),
+        topic.getAnswers() == null ? 0 : topic.getAnswers().size(),
         new GetCourse(topic.getCourse()),
         new GetUserWithProfile(topic.getUser()),
-        topic.getCreatedOn());
+        topic.getLastUpdatedOn());
   }
 }
